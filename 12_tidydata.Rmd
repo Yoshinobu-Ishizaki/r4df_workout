@@ -1,0 +1,79 @@
+---
+title: "R4DS ~ データサイエンスのためのR"
+subtitle: "12. Tidydata ~ きれいなデータ"
+
+output: 
+    html_notebook:
+        theme: flatly
+        toc: true
+        toc_float: true
+        number_sections: true
+        
+---
+
+# ソース
+
+https://r4ds.had.co.nz/tidy-data.html
+
+
+```{r,warning=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+# きれいなデータということ
+
+tidyverse にはサンプルとしてWHOによる結核症例のデータが異なるフォーマットで4種類ほど入っている。
+
+table1はいわゆるきれいなデータ。それ以外はデータフォーマットとして「きれい」でない。
+
+```{r}
+table1
+```
+
+```{r}
+table2
+```
+
+
+```{r}
+table3
+```
+
+きれいなデータは、
+
+1. 個々の変数は固有の列を持つ。
+1. 個々の観測値セットは固有の行を持つ。
+1. 個々の観測値は固有のセルを持つ。
+
+という特徴を有している。
+
+
+きれいなデータであれば、tidyverseで一貫した方法で効率よく処理できる。
+
+例えば、人工当りの症例比を計算したり、
+
+```{r}
+# Compute rate per 10,000
+table1 %>% 
+  mutate(rate = cases / population * 10000)
+
+```
+年別の症例数合計を計算したり、
+
+```{r}
+# Compute cases per year
+table1 %>% 
+  count(year, wt = cases)
+```
+
+年による変化を可視化したり、
+
+```{r}
+# Visualise changes over time
+ggplot(table1, aes(year, cases)) + 
+  geom_line(aes(group = country), colour = "grey50") + 
+  geom_point(aes(colour = country))
+```
+
+が、シンプルな関数で表現できる。
+
